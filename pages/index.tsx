@@ -5,7 +5,7 @@ import Head from 'next/head';
 const index = () => (
   <div>
     <Head>
-      <title>Dices - D&D 5</title>
+      <title>Dices</title>
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <ul>
