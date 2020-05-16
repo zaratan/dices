@@ -110,18 +110,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       ...rolls8DRRS4.array,
     ].map((e) => e.name)
   );
-  const data = {
-    sr7: [...new Array(rollMax + Math.abs(rollMin) + 1)].map((_, i) => ({
-      name: rollMin + i,
-      D8NRRS0: rolls8DNRRS0.map.get(rollMin + i)?.val || 0,
-      D8RRS0: rolls8DRRS0.map.get(rollMin + i)?.val || 0,
-      D8RRS1: rolls8DRRS1.map.get(rollMin + i)?.val || 0,
-      D8RRS2: rolls8DRRS2.map.get(rollMin + i)?.val || 0,
-      D8RRS3: rolls8DRRS3.map.get(rollMin + i)?.val || 0,
-      D8RRS4: rolls8DRRS4.map.get(rollMin + i)?.val || 0,
-    })),
-  };
-
+  const data = [...new Array(rollMax + Math.abs(rollMin) + 1)].map((_, i) => ({
+    name: rollMin + i,
+    D8NRRS0: rolls8DNRRS0.map.get(rollMin + i)?.val || 0,
+    D8RRS0: rolls8DRRS0.map.get(rollMin + i)?.val || 0,
+    D8RRS1: rolls8DRRS1.map.get(rollMin + i)?.val || 0,
+    D8RRS2: rolls8DRRS2.map.get(rollMin + i)?.val || 0,
+    D8RRS3: rolls8DRRS3.map.get(rollMin + i)?.val || 0,
+    D8RRS4: rolls8DRRS4.map.get(rollMin + i)?.val || 0,
+  }));
   return {
     props: { data, dice_count, sr, patreon: false },
   };
