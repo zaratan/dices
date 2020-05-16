@@ -48,10 +48,21 @@ export const successRoll = ({
   }
 
   // compute successes
+  const effectiveSR = success > 9 ? 9 : success;
+  const successMinus = success > 9 ? success - 9 : 0;
+  if (successMinus > 0) {
+    let removedSuccess = 0;
+    roll = roll.map((dice) => {
+      if (dice < 9) return dice;
+      if (removedSuccess >= successMinus) return dice;
+      removedSuccess += 1;
+      return 0;
+    });
+  }
   return {
     roll,
     success: roll.reduce((count, dice) => {
-      if (dice >= success) return count + 1;
+      if (dice >= effectiveSR) return count + 1;
       if (dice === 1) return count - 1;
       return count;
     }, 0),
