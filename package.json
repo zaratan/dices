@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@nivo/line": "^0.61.1",
     "@types/recharts": "^1.8.10",
     "next": "9.4.0",
     "react": "16.13.1",
