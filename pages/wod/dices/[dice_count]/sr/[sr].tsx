@@ -160,7 +160,7 @@ const Vampire = ({
       <LineChart
         width={700}
         height={400}
-        data={data.sr7}
+        data={data}
         margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
       >
         <Legend verticalAlign="top" height={36} />
