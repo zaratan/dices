@@ -36,6 +36,7 @@ export const successRoll = ({
       roll = [...roll, ...newRoll];
     }
   }
+  const unmodifiedRoll = [...roll];
   // remove 1s
   if (remove1 > 0) {
     let removed1 = 0;
@@ -60,7 +61,7 @@ export const successRoll = ({
     });
   }
   return {
-    roll,
+    roll: unmodifiedRoll,
     success: roll.reduce((count, dice) => {
       if (dice >= effectiveSR) return count + 1;
       if (dice === 1) return count - 1;
