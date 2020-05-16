@@ -14,6 +14,11 @@ const index = () => (
           <a>D&D 5</a>
         </Link>
       </li>
+      <li>
+        <Link href="/wod">
+          <a>WoD</a>
+        </Link>
+      </li>
     </ul>
   </div>
 );

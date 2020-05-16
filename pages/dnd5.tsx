@@ -46,51 +46,57 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default function Home({
+const Home = ({
   data,
 }: {
-  data: Array<{ x: number; advantage: number; normal: number; name: string }>;
-}) {
-  return (
-    <div className="container">
-      <Head>
-        <title>Dices - D&D 5</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  data: Array<{
+    x: number;
+    disadvantage: number;
+    advantage: number;
+    normal: number;
+    name: string;
+  }>;
+}) => (
+  <div>
+    <Head>
+      <title>Dices - D&D 5</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
 
-      <LineChart
-        width={700}
-        height={400}
-        data={data}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
+    <LineChart
+      width={700}
+      height={400}
+      data={data}
+      margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+    >
+      <Legend verticalAlign="top" height={36} />
 
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="advantage"
-          stroke="#ff7300"
-          yAxisId={0}
-          name="Advantage"
-        />
-        <Line
-          type="monotone"
-          dataKey="normal"
-          stroke="#66dd12"
-          yAxisId={0}
-          name="Normal"
-        />
-        <Line
-          type="monotone"
-          dataKey="disadvantage"
-          stroke="#2368ee"
-          yAxisId={0}
-          name="Disadvantage"
-        />
-      </LineChart>
-    </div>
-  );
-}
+      <XAxis dataKey="name" />
+      <Tooltip />
+      <CartesianGrid stroke="#f5f5f5" />
+      <Line
+        type="monotone"
+        dataKey="advantage"
+        stroke="#ff7300"
+        yAxisId={0}
+        name="Advantage"
+      />
+      <Line
+        type="monotone"
+        dataKey="normal"
+        stroke="#66dd12"
+        yAxisId={0}
+        name="Normal"
+      />
+      <Line
+        type="monotone"
+        dataKey="disadvantage"
+        stroke="#2368ee"
+        yAxisId={0}
+        name="Disadvantage"
+      />
+    </LineChart>
+  </div>
+);
+
+export default Home;

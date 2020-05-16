@@ -13,11 +13,104 @@ export const takeNDices = ({
     rollDice({ faces, add, times: dicePerRoll })
       .sort((a, b) => (max ? b - a : a - b))
       .slice(0, take)
-      .reduce((res, e) => {
-        console.log({ res, e });
-        return res + e;
-      })
+      .reduce((res, e) => res + e)
   );
+
+export const successRoll = ({
+  dices = 1,
+  faces = 10,
+  success = 6,
+  reroll = false,
+  remove1 = 0,
+} = {}) => {
+  let roll = rollDice({ faces, times: dices });
+  // reroll until stabilization
+  if (reroll) {
+    const countMax = (count: number, dice: number) =>
+      dice === faces ? count + 1 : count;
+    let newMaxDices = roll.reduce(countMax, 0);
+
+    while (newMaxDices !== 0) {
+      const newRoll = rollDice({ faces, times: newMaxDices });
+      newMaxDices = newRoll.reduce(countMax, 0);
+      roll = [...roll, ...newRoll];
+    }
+  }
+  // remove 1s
+  if (remove1 > 0) {
+    let removed1 = 0;
+    roll = roll.map((dice) => {
+      if (dice !== 1) return dice;
+      if (removed1 >= remove1) return 1;
+      removed1 += 1;
+      return 0;
+    });
+  }
+
+  // compute successes
+  return {
+    roll,
+    success: roll.reduce((count, dice) => {
+      if (dice >= success) return count + 1;
+      if (dice === 1) return count - 1;
+      return count;
+    }, 0),
+  };
+};
+
+export const successDices = ({
+  dices = 1,
+  faces = 10,
+  times = 1,
+  success = 6,
+  reroll = false,
+  remove1 = 0,
+} = {}) =>
+  [...new Array(times)].map(() => {
+    const rolls = successRoll({ dices, faces, success, remove1, reroll });
+    return rolls.success;
+  });
+
+export const successTable = ({
+  array,
+  fillVoids,
+}: {
+  array: Array<number>;
+  fillVoids?: boolean;
+}) => {
+  const minRoll = array.reduce((res, e) => (res > e ? e : res), 0);
+  const maxRoll = Math.max(...array);
+
+  const resultTable = new Map();
+
+  if (fillVoids) {
+    [...Array(maxRoll + Math.abs(minRoll))].forEach((_, i) => {
+      const index = minRoll + i;
+
+      resultTable.set(index, {
+        name: index,
+        val: 0,
+      });
+    });
+  }
+  const finalMap = array.reduce<Map<number, { name: number; val: number }>>(
+    (res, e) => {
+      res.set(
+        e,
+        res.get(e) !== undefined
+          ? { ...res.get(e), val: res.get(e).val + 1 }
+          : { name: e, val: 1 }
+      );
+      return res;
+    },
+    resultTable
+  );
+
+  return {
+    array: Array.from(finalMap.values()).sort((a, b) => a.name - b.name),
+    map: finalMap,
+  };
+};
 
 export const table = ({
   array,
