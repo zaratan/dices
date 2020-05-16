@@ -26,6 +26,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const dice_count = Number(params.dice_count);
   const sr = Number(params.sr);
 
+  if (dice_count > 20 || dice_count < 1 || sr > 15 || sr < 2) {
+    return {
+      props: { data: [], sr, dice_count, patreon: true },
+    };
+  }
+
   const rolls8DNRRS0 = successTable({
     array: successDices({
       times: NUMBER_ROLLS,
@@ -117,7 +123,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 
   return {
-    props: { data, dice_count, sr },
+    props: { data, dice_count, sr, patreon: false },
   };
 };
 
@@ -125,16 +131,24 @@ const Vampire = ({
   data,
   dice_count,
   sr,
+  patreon,
 }: {
   sr: number;
   dice_count: number;
-  data: {
-    sr7: Array<{ name: number; 8: number }>;
-  };
+  data: Array<{ name: number; 8: number }>;
+  patreon: boolean;
 }) => {
   const router = useRouter();
   if (router.isFallback) {
     return <div>Loading...</div>;
+  }
+  if (patreon) {
+    return (
+      <div>
+        Really? If you want this done, please consider my{' '}
+        <a href="https://www.patreon.com/zaratan">Patreon</a>
+      </div>
+    );
   }
 
   return (
@@ -197,6 +211,7 @@ const Vampire = ({
           name={`${dice_count} dices reroll spe 4`}
         />
       </LineChart>
+      <p>SR: {sr}</p>
     </div>
   );
 };
