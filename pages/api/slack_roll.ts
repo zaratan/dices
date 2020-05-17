@@ -61,19 +61,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             elements: [
               {
                 type: 'mrkdwn',
-                text: 'Ex: /roll 8s2 sr8\n=> 8 dice SR 8 and remove two 1.',
+                text: 'Ex: /roll 8s2 sr8\n=> 8 dices SR 8 and removes two 1.',
               },
               {
                 type: 'mrkdwn',
-                text: 'Ex: /roll 8e sr7\n=> 8 dice SR 7 and reroll 10s.',
+                text: 'Ex: /roll 8e sr7\n=> 8 dices SR 7 and rerolls 10s.',
               },
               {
                 type: 'mrkdwn',
-                text: 'Ex: /roll 8d sr7\n=> 8 dice SR 7 no spe no reroll.',
+                text: 'Ex: /roll 8d sr7\n=> 8 dices SR 7 no spe no reroll.',
               },
               {
                 type: 'mrkdwn',
-                text: 'Ex: /roll 8r sr7\n=> 8 dice SR 7 raw: no 1 no reroll.',
+                text: 'Ex: /roll 8r sr7\n=> 8 dices SR 7 raw: no 1 no reroll.',
               },
             ],
           },
@@ -121,22 +121,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     let successString: string;
     if (roll.success > 1) {
-      successString = `${roll.success} successes`;
+      successString = `*${roll.success} successes*`;
     } else if (roll.success === 1) {
-      successString = `1 success`;
+      successString = `*1 success*`;
     } else if (roll.success === 0) {
-      successString = `fail (0 success)`;
+      successString = `*fail (0 success)*`;
     } else {
-      successString = `critical fail! (${Math.abs(roll.success)} fails)`;
+      successString = `*critical fail! (${Math.abs(roll.success)} fails)*`;
     }
 
     const ambiString = ambi
       ? '\n:warning: The query was ambiguous. Please check :slightly_smiling_face:'
       : '';
 
-    const explString = `_[${roll.roll.join(', ')}]_ (${dices} SR ${sr} ${
-      raw ? 'raw' : ''
-    }${
+    const explString = `_[${roll.roll.join(', ')}]_ (${dices} dice${
+      dices > 1 ? 's' : ''
+    } SR ${sr} ${raw ? 'raw' : ''}${
       // eslint-disable-next-line no-nested-ternary
       raw
         ? ''
