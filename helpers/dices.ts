@@ -22,6 +22,7 @@ export const successRoll = ({
   success = 6,
   reroll = false,
   remove1 = 0,
+  raw = false,
 } = {}) => {
   let roll = rollDice({ faces, times: dices });
   // reroll until stabilization
@@ -64,7 +65,7 @@ export const successRoll = ({
     roll: unmodifiedRoll,
     success: roll.reduce((count, dice) => {
       if (dice >= effectiveSR) return count + 1;
-      if (dice === 1) return count - 1;
+      if (dice === 1 && !raw) return count - 1;
       return count;
     }, 0),
   };
