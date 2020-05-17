@@ -7,7 +7,7 @@ const SR_REGEXP = /sr\s*(?<sr>\d+)|(?:\s|^)s\s*(?<srs>\d+)/i;
 // https://regex101.com/r/zRwzzV/1
 const ATTR_ABI_REGEX = /(?<bspe>s(?:pe?c?)?(?=\s*\d+\s*(?=\+)))?.*(?<attr>\d+)\s*\+\s*(?<abi>\d+)[de]?(?:(?<spec>s)|.*(?<spe>s(?:pe?c?)?)(?:$|(?!\s*[0-9r])))?/i;
 // https://regex101.com/r/EA0VRJ/1
-const DICES_REGEX = /(?:(?<![a-z+]\s*)|^)(?<dices>\d+)\s*d?(?<explosive>e)?(?<raw>r(?:aw)?)(?:s(?:pe?c?)?\s*(?<spec>\d))?(?!\+)/i;
+const DICES_REGEX = /(?:(?<![a-z+]\s*)|^)(?<dices>\d+)\s*d?(?<explosive>e)?(?<raw>r(?:aw)?)?(?:s(?:pe?c?)?\s*(?<spec>\d))?(?!\+)/i;
 
 const AMBIG_REGEX = /^(?:(?:(?<!\+)\s*\d+\s+s\s*\d+\s*)|(?:s\s*\d.*\ss\s*\d))$/i;
 
