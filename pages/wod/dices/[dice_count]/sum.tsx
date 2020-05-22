@@ -252,7 +252,7 @@ const ResultSection = ({
     <WodDicesVariableSrGraph
       data={data}
       diceCount={diceCount}
-      rollType={title}
+      rollType={`${title} at least n successes`}
     />
   </section>
 );
