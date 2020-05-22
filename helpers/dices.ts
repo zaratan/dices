@@ -90,7 +90,7 @@ export const successTable = ({
 }: {
   array: Array<number>;
   fillVoids?: boolean;
-}) => {
+}): successTableType => {
   const minRoll = array.reduce((res, e) => (res > e ? e : res), 0);
   const maxRoll = Math.max(...array);
 
@@ -123,6 +123,11 @@ export const successTable = ({
     array: Array.from(finalMap.values()).sort((a, b) => a.name - b.name),
     map: finalMap,
   };
+};
+
+export type successTableType = {
+  array: Array<{ name: number; val: number }>;
+  map: Map<number, { name: number; val: number }>;
 };
 
 export const table = ({

@@ -1,16 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import {
-  LineChart,
-  XAxis,
-  Tooltip,
-  CartesianGrid,
-  Line,
-  Legend,
-} from 'recharts';
 import { useRouter } from 'next/router';
 import { successDices, successTable } from '../../../helpers/dices';
+import WodDicesVariableSrGraph from '../../../components/WodDicesVariableSrGraph';
 
 const NUMBER_ROLLS = 10000;
 
@@ -31,497 +24,99 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
   const srs = [4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const noReRollTables = srs.map((sr) => ({
-    sr,
-    rolls: successTable({
-      array: successDices({
-        times: NUMBER_ROLLS,
-        dices: dice_count,
-        remove1: 0,
-        reroll: false,
-        success: sr,
+  const generateRollTable = ({ remove1 = 0, reroll = false } = {}) =>
+    srs.map((sr) => ({
+      sr,
+      rolls: successTable({
+        array: successDices({
+          times: NUMBER_ROLLS,
+          dices: dice_count,
+          remove1,
+          reroll,
+          success: sr,
+        }),
       }),
-    }),
-  }));
-  const reRollTables = srs.map((sr) => ({
-    sr,
-    rolls: successTable({
-      array: successDices({
-        times: NUMBER_ROLLS,
-        dices: dice_count,
-        remove1: 0,
-        reroll: true,
-        success: sr,
-      }),
-    }),
-  }));
-  const spe1Tables = srs.map((sr) => ({
-    sr,
-    rolls: successTable({
-      array: successDices({
-        times: NUMBER_ROLLS,
-        dices: dice_count,
-        remove1: 1,
-        reroll: true,
-        success: sr,
-      }),
-    }),
-  }));
-  const spe2Tables = srs.map((sr) => ({
-    sr,
-    rolls: successTable({
-      array: successDices({
-        times: NUMBER_ROLLS,
-        dices: dice_count,
-        remove1: 2,
-        reroll: true,
-        success: sr,
-      }),
-    }),
-  }));
-  const spe3Tables = srs.map((sr) => ({
-    sr,
-    rolls: successTable({
-      array: successDices({
-        times: NUMBER_ROLLS,
-        dices: dice_count,
-        remove1: 3,
-        reroll: true,
-        success: sr,
-      }),
-    }),
-  }));
+    }));
+  const noReRollTables = generateRollTable({ remove1: 0, reroll: false });
+  const reRollTables = generateRollTable({ remove1: 0, reroll: true });
+  const spe1Tables = generateRollTable({ remove1: 1, reroll: true });
+  const spe2Tables = generateRollTable({ remove1: 2, reroll: true });
+  const spe3Tables = generateRollTable({ remove1: 3, reroll: true });
 
+  const minMaxCount = (
+    {
+      rollTable,
+      isMin = true,
+    }: {
+      rollTable: Array<{ rolls: { array: Array<{ name: number }> } }>;
+      isMin: boolean;
+    } = { isMin: true, rollTable: [] }
+  ) =>
+    rollTable
+      .map((e) => e.rolls.array)
+      .flat()
+      .reduce(
+        (res, e) =>
+          (isMin && res > e.name) || (!isMin && res < e.name) ? e.name : res,
+        0
+      );
   const rollMin = {
-    noReRoll: noReRollTables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((min, e) => (min > e.name ? e.name : min), 0),
-    reRoll: reRollTables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((min, e) => (min > e.name ? e.name : min), 0),
-    spe1: spe1Tables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((min, e) => (min > e.name ? e.name : min), 0),
-    spe2: spe2Tables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((min, e) => (min > e.name ? e.name : min), 0),
-    spe3: spe3Tables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((min, e) => (min > e.name ? e.name : min), 0),
+    noReRoll: minMaxCount({ rollTable: noReRollTables, isMin: true }),
+    reRoll: minMaxCount({ rollTable: reRollTables, isMin: true }),
+    spe1: minMaxCount({ rollTable: spe1Tables, isMin: true }),
+    spe2: minMaxCount({ rollTable: spe2Tables, isMin: true }),
+    spe3: minMaxCount({ rollTable: spe3Tables, isMin: true }),
   };
   const rollMax = {
-    noReRoll: noReRollTables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((max, e) => (max < e.name ? e.name : max), 0),
-    reRoll: reRollTables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((max, e) => (max < e.name ? e.name : max), 0),
-    spe1: spe1Tables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((max, e) => (max < e.name ? e.name : max), 0),
-    spe2: spe2Tables
-      .map((e) => e.rolls.array)
-      .flat()
-      .reduce((max, e) => (max < e.name ? e.name : max), 0),
-    spe3: [...spe3Tables.map((e) => e.rolls.array)]
-      .flat()
-      .reduce((max, e) => (max < e.name ? e.name : max), 0),
+    noReRoll: minMaxCount({ rollTable: noReRollTables, isMin: false }),
+    reRoll: minMaxCount({ rollTable: reRollTables, isMin: false }),
+    spe1: minMaxCount({ rollTable: spe1Tables, isMin: false }),
+    spe2: minMaxCount({ rollTable: spe2Tables, isMin: false }),
+    spe3: minMaxCount({ rollTable: spe3Tables, isMin: false }),
   };
 
+  const tableToSrData = ({
+    rollTable,
+    key,
+    i,
+    sr,
+  }: {
+    rollTable: Array<{
+      sr: number;
+      rolls: { map: Map<number, { val: number }> };
+    }>;
+    key: string;
+    i: number;
+    sr: number;
+  }) =>
+    Math.round(
+      (rollTable.find((e) => e.sr === sr)?.rolls?.map?.get(rollMin[key] + i)
+        ?.val /
+        NUMBER_ROLLS) *
+        10000
+    ) / 100 || 0;
+  const tableToData = ({ rollTable, key }: { key: string; rollTable: any }) =>
+    [...new Array(rollMax[key] + Math.abs(rollMin[key]) + 1)].map((_, i) => {
+      const res = {
+        name: rollMin[key] + i,
+      };
+      srs.forEach((sr) => {
+        res[`sr${sr}`] = tableToSrData({
+          rollTable,
+          i,
+          key,
+          sr,
+        });
+      });
+
+      return res;
+    });
   const data = {
-    noReRoll: [
-      ...new Array(rollMax.noReRoll + Math.abs(rollMin.noReRoll) + 1),
-    ].map((_, i) => ({
-      name: rollMin.noReRoll + i,
-      sr4:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 4)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr5:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 5)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr6:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 6)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr7:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 7)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr8:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 8)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr9:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 9)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr10:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 10)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr11:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 11)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-      sr12:
-        Math.round(
-          (noReRollTables
-            .find((e) => e.sr === 12)
-            ?.rolls?.map?.get(rollMin.noReRoll + i)?.val /
-            NUMBER_ROLLS) *
-            10000
-        ) / 100 || 0,
-    })),
-    reRoll: [...new Array(rollMax.reRoll + Math.abs(rollMin.reRoll) + 1)].map(
-      (_, i) => ({
-        name: rollMin.reRoll + i,
-        sr4:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 4)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr5:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 5)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr6:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 6)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr7:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 7)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr8:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 8)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr9:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 9)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr10:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 10)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr11:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 11)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr12:
-          Math.round(
-            (reRollTables
-              .find((e) => e.sr === 12)
-              ?.rolls?.map?.get(rollMin.reRoll + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-      })
-    ),
-    spe1: [...new Array(rollMax.spe1 + Math.abs(rollMin.spe1) + 1)].map(
-      (_, i) => ({
-        name: rollMin.spe1 + i,
-        sr4:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 4)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr5:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 5)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr6:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 6)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr7:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 7)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr8:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 8)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr9:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 9)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr10:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 10)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr11:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 11)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr12:
-          Math.round(
-            (spe1Tables
-              .find((e) => e.sr === 12)
-              ?.rolls?.map?.get(rollMin.spe1 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-      })
-    ),
-    spe2: [...new Array(rollMax.spe2 + Math.abs(rollMin.spe2) + 1)].map(
-      (_, i) => ({
-        name: rollMin.spe2 + i,
-        sr4:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 4)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr5:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 5)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr6:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 6)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr7:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 7)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr8:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 8)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr9:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 9)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr10:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 10)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr11:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 11)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr12:
-          Math.round(
-            (spe2Tables
-              .find((e) => e.sr === 12)
-              ?.rolls?.map?.get(rollMin.spe2 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-      })
-    ),
-    spe3: [...new Array(rollMax.spe3 + Math.abs(rollMin.spe3) + 1)].map(
-      (_, i) => ({
-        name: rollMin.spe3 + i,
-        sr4:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 4)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr5:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 5)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr6:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 6)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr7:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 7)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr8:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 8)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr9:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 9)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr10:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 10)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr11:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 11)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-        sr12:
-          Math.round(
-            (spe3Tables
-              .find((e) => e.sr === 12)
-              ?.rolls?.map?.get(rollMin.spe3 + i)?.val /
-              NUMBER_ROLLS) *
-              10000
-          ) / 100 || 0,
-      })
-    ),
+    noReRoll: tableToData({ rollTable: noReRollTables, key: 'noReRoll' }),
+    reRoll: tableToData({ rollTable: reRollTables, key: 'reRoll' }),
+    spe1: tableToData({ rollTable: spe1Tables, key: 'spe1' }),
+    spe2: tableToData({ rollTable: spe2Tables, key: 'spe2' }),
+    spe3: tableToData({ rollTable: spe3Tables, key: 'spe3' }),
   };
 
   return {
@@ -557,386 +152,31 @@ const Vampire = ({
         <title>Dices - Wod - Dices: {dice_count}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <LineChart
-        width={700}
-        height={400}
+      <WodDicesVariableSrGraph
         data={data.noReRoll}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
-
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="sr4"
-          // stroke="#2368ee"
-          yAxisId={0}
-          name="SR4"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr5"
-          stroke="#ff6811"
-          yAxisId={0}
-          name="SR5"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr6"
-          stroke="#ff68ee"
-          yAxisId={0}
-          name="SR6"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr7"
-          stroke="#236800"
-          yAxisId={0}
-          name="SR7"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr8"
-          stroke="#68e32e"
-          yAxisId={0}
-          name="SR8"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr9"
-          stroke="#2f68ee"
-          yAxisId={0}
-          name="SR9"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr10"
-          stroke="#682"
-          yAxisId={0}
-          name="SR10"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr11"
-          stroke="#61e"
-          yAxisId={0}
-          name="SR11"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr12"
-          stroke="#231"
-          yAxisId={0}
-          name="SR12"
-        />
-      </LineChart>
-      <p>Dices: {dice_count} no reroll</p>
-      <LineChart
-        width={700}
-        height={400}
+        diceCount={dice_count}
+        rollType="no reroll"
+      />
+      <WodDicesVariableSrGraph
         data={data.reRoll}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
-
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="sr4"
-          // stroke="#2368ee"
-          yAxisId={0}
-          name="SR4"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr5"
-          stroke="#ff6811"
-          yAxisId={0}
-          name="SR5"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr6"
-          stroke="#ff68ee"
-          yAxisId={0}
-          name="SR6"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr7"
-          stroke="#236800"
-          yAxisId={0}
-          name="SR7"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr8"
-          stroke="#68e32e"
-          yAxisId={0}
-          name="SR8"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr9"
-          stroke="#2f68ee"
-          yAxisId={0}
-          name="SR9"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr10"
-          stroke="#682"
-          yAxisId={0}
-          name="SR10"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr11"
-          stroke="#61e"
-          yAxisId={0}
-          name="SR11"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr12"
-          stroke="#231"
-          yAxisId={0}
-          name="SR12"
-        />
-      </LineChart>
-      <p>Dices: {dice_count} with reroll</p>
-      <LineChart
-        width={700}
-        height={400}
+        diceCount={dice_count}
+        rollType="with reroll"
+      />
+      <WodDicesVariableSrGraph
         data={data.spe1}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
-
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="sr4"
-          // stroke="#2368ee"
-          yAxisId={0}
-          name="SR4"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr5"
-          stroke="#ff6811"
-          yAxisId={0}
-          name="SR5"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr6"
-          stroke="#ff68ee"
-          yAxisId={0}
-          name="SR6"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr7"
-          stroke="#236800"
-          yAxisId={0}
-          name="SR7"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr8"
-          stroke="#68e32e"
-          yAxisId={0}
-          name="SR8"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr9"
-          stroke="#2f68ee"
-          yAxisId={0}
-          name="SR9"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr10"
-          stroke="#682"
-          yAxisId={0}
-          name="SR10"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr11"
-          stroke="#61e"
-          yAxisId={0}
-          name="SR11"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr12"
-          stroke="#231"
-          yAxisId={0}
-          name="SR12"
-        />
-      </LineChart>
-      <p>Dices: {dice_count} with 1 spe</p>
-      <LineChart
-        width={700}
-        height={400}
+        diceCount={dice_count}
+        rollType="with 1 spe"
+      />
+      <WodDicesVariableSrGraph
         data={data.spe2}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
-
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="sr4"
-          // stroke="#2368ee"
-          yAxisId={0}
-          name="SR4"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr5"
-          stroke="#ff6811"
-          yAxisId={0}
-          name="SR5"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr6"
-          stroke="#ff68ee"
-          yAxisId={0}
-          name="SR6"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr7"
-          stroke="#236800"
-          yAxisId={0}
-          name="SR7"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr8"
-          stroke="#68e32e"
-          yAxisId={0}
-          name="SR8"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr9"
-          stroke="#2f68ee"
-          yAxisId={0}
-          name="SR9"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr10"
-          stroke="#682"
-          yAxisId={0}
-          name="SR10"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr11"
-          stroke="#61e"
-          yAxisId={0}
-          name="SR11"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr12"
-          stroke="#231"
-          yAxisId={0}
-          name="SR12"
-        />
-      </LineChart>
-      <p>Dices: {dice_count} with 2 spe</p>
-      <LineChart
-        width={700}
-        height={400}
+        diceCount={dice_count}
+        rollType="with 2 spe"
+      />
+      <WodDicesVariableSrGraph
         data={data.spe3}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
-
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="sr4"
-          // stroke="#2368ee"
-          yAxisId={0}
-          name="SR4"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr5"
-          stroke="#ff6811"
-          yAxisId={0}
-          name="SR5"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr6"
-          stroke="#ff68ee"
-          yAxisId={0}
-          name="SR6"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr7"
-          stroke="#236800"
-          yAxisId={0}
-          name="SR7"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr8"
-          stroke="#68e32e"
-          yAxisId={0}
-          name="SR8"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr9"
-          stroke="#2f68ee"
-          yAxisId={0}
-          name="SR9"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr10"
-          stroke="#682"
-          yAxisId={0}
-          name="SR10"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr11"
-          stroke="#61e"
-          yAxisId={0}
-          name="SR11"
-        />
-        <Line
-          type="monotone"
-          dataKey="sr12"
-          stroke="#231"
-          yAxisId={0}
-          name="SR12"
-        />
-      </LineChart>
-      <p>Dices: {dice_count} with 3 spe</p>
+        diceCount={dice_count}
+        rollType="with 3 spe"
+      />
     </div>
   );
 };
