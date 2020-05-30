@@ -96,7 +96,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const attr = Number(attr_match.groups.attr);
       const abi = Number(attr_match.groups.abi);
       dices = attr + abi;
-      reroll10 = abi > 3;
+      reroll10 = abi >= 3;
       remove1 = bspe || spe || spec ? Math.max(abi - 3, 0) : 0;
     } else if (dices_match?.groups) {
       const { explosive } = dices_match.groups;
