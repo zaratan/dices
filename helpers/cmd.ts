@@ -5,7 +5,7 @@ export const SR_REGEXP = /sr\s*(?<sr>\d+)|(?:\s|^)s\s*(?<srs>\d+)/i;
 // https://regex101.com/r/zRwzzV/1
 export const ATTR_ABI_REGEX = /(?<bspe>s(?:pe?c?)?(?=\s*\d+\s*(?=\+)))?.*(?<attr>\d+)\s*\+\s*(?<abi>\d+)[de]?(?:(?<spec>s)|.*(?<spe>s(?:pe?c?)?)(?:$|(?!\s*[0-9r])))?/i;
 // https://regex101.com/r/EA0VRJ/1
-export const DICES_REGEX = /(\s*!roll\s*)?(?:(?<![a-z+]\s*)|^)(?<dices>\d+)\s*d?(?<explosive>e)?(?<raw>r(?:aw)?)?(?:s(?:pe?c?)?\s*(?<spec>\d))?(?!\+)/i;
+export const DICES_REGEX = /(?:(?<![a-z+]\s*)|^)(?<dices>\d+)\s*d?(?<explosive>e)?(?<raw>r(?:aw)?)?(?:s(?:pe?c?)?\s*(?<spec>\d))?(?!\+)/i;
 
 export const AMBIG_REGEX = /^(?:(?:(?<!\+)\s*\d+\s+s\s*\d+\s*)|(?:s\s*\d.*\ss\s*\d))$/i;
 
@@ -35,7 +35,7 @@ export const parseCommand = (text: string) => {
     reroll10 = dices > 3 ? !!explosive || !!dicesMatch.groups.spec : false;
   }
   const sr = Number(
-    (srMatch?.groups && (srMatch?.groups['sr'] || srMatch?.groups['srs'])) || 6
+    (srMatch?.groups && (srMatch?.groups.sr || srMatch?.groups.srs)) || 6
   );
 
   return {

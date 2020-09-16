@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable camelcase */
 import { NextApiRequest, NextApiResponse } from 'next';
-import { ATTR_ABI_REGEX, DICES_REGEX, SR_REGEXP, AMBIG_REGEX, roll, parseAndRoll } from '../../helpers/cmd';
-import { successRoll } from '../../helpers/dices';
+import { parseAndRoll } from '../../helpers/cmd';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -73,7 +72,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const {successString, explString} = parseAndRoll(text)
+    const { successString, explString } = parseAndRoll(text);
 
     // ok
     res.status(200).json({

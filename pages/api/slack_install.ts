@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await fetch(
