@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import React from 'react';
+/* eslint-disable camelcase */
 import { useRouter } from 'next/router';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';

@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 
@@ -28,6 +27,11 @@ const index = () => (
             src="https://platform.slack-edge.com/img/add_to_slack.png"
             srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
           />
+        </a>
+      </li>
+      <li>
+        <a href="https://discord.com/oauth2/authorize?client_id=454652194931736576&scope=bot">
+          Add Discord bot
         </a>
       </li>
     </ul>

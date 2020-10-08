@@ -1,4 +1,3 @@
-import React from 'react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import {
