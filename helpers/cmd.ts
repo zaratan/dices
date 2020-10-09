@@ -91,7 +91,11 @@ export const roll = ({
     dices > 1 ? 's' : ''
   } SR ${sr} ${raw ? 'raw' : ''}${
     // eslint-disable-next-line no-nested-ternary
-    raw ? '' : remove1 > 0 ? `with spec ${remove1} 1s ignored` : `without spec`
+    raw
+      ? ''
+      : remove1 > 0
+      ? `with spec => ${remove1} 1s ignored`
+      : `without spec`
   })${ambiString}`;
 
   return {

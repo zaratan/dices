@@ -1,6 +1,7 @@
-import { Client } from 'discord.js';
+import { Client, MessageEmbed } from 'discord.js';
 import { resolve } from 'path';
 import { config } from 'dotenv';
+import { parseAndRoll } from '../helpers/cmd';
 
 config({ path: resolve(__dirname, '../.env.discord') });
 
@@ -11,8 +12,14 @@ client.on('ready', () => {
 });
 
 client.on('message', (msg) => {
-  if (msg.content === 'ping') {
-    msg.reply('pong');
+  const diceMatch = /!roll\s+(?<cmd>.*$)/.exec(msg.content);
+  if (diceMatch?.groups?.cmd) {
+    const result = parseAndRoll(diceMatch.groups.cmd);
+    const resultEmbed = new MessageEmbed();
+    resultEmbed.setTitle(result.successString);
+    resultEmbed.setDescription(result.explString);
+
+    msg.reply(resultEmbed);
   }
 });
 
