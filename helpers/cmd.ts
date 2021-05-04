@@ -1,38 +1,50 @@
 import { successRoll } from './dices';
 
 // https://regex101.com/r/WV6qCJ/1
-export const SR_REGEXP = /sr\s*(?<sr>\d+)|(?:\s|^)s\s*(?<srs>\d+)/i;
-// https://regex101.com/r/zRwzzV/1
-export const ATTR_ABI_REGEX = /(?<bspe>s(?:pe?c?)?(?=\s*\d+\s*(?=\+)))?.*(?<attr>\d+)\s*\+\s*(?<abi>\d+)[de]?(?:(?<spec>s)|.*(?<spe>s(?:pe?c?)?)(?:$|(?!\s*[0-9r])))?/i;
-// https://regex101.com/r/EA0VRJ/1
-export const DICES_REGEX = /(?:(?<![a-z+]\s*)|^)(?<dices>\d+)\s*d?(?<explosive>e)?(?<raw>r(?:aw)?)?(?:s(?:pe?c?)?\s*(?<spec>\d))?(?!\+)/i;
+export const SR_REGEXP = /sr\s*(?<sr>\d+)/i;
 
-export const AMBIG_REGEX = /^(?:(?:(?<!\+)\s*\d+\s+s\s*\d+\s*)|(?:s\s*\d.*\ss\s*\d))$/i;
+// https://regex101.com/r/J4vAbo/2
+export const SUM_REGEX = /(?:spe?c?\s*(?<bspec>\d+).*)?(?<sum>\d+(?:\s*\+\s*\d+\s*)+\+\s*\d+)\s*d?(?<explosive>e)?(?<raw>r)?(?:s\s*(?<spe>\d+))?(?:.*spe?c?\s*(?<spec>\d+))?/i;
+
+// https://regex101.com/r/zRwzzV/4
+export const ATTR_ABI_REGEX = /(?<bspe>spe?c?)?(?:.*?)(?<attr>\d+)\s*\+\s*(?<abi>\d+)(?<raw>\s*r)?(?:.*(?<spe>spe?c?))?/i;
+
+// https://regex101.com/r/EA0VRJ/7
+export const DICES_REGEX = /(?:spe?c?\s*(?<bspec>\d+).*)?(?:\s*sr\s*\d+\s*)?(?<diceCount>\d+)\s*d?(?<explosive>e)?(?<raw>r)?(?:s\s*(?<spe>\d+))?(?:.*spe?c?\s*(?<spec>\d+))?/i;
 
 export const parseCommand = (text: string) => {
   let remove1 = 0;
   let reroll10 = false;
   let dices = 1;
-  let raw = false;
+  let raw = text.includes('raw');
 
+  const sumMatch = SUM_REGEX.exec(text);
   const attrMatch = ATTR_ABI_REGEX.exec(text);
   const dicesMatch = DICES_REGEX.exec(text);
   const srMatch = SR_REGEXP.exec(text);
-  const ambi = AMBIG_REGEX.test(text);
+  if (sumMatch?.groups) {
+    const { explosive, spe, spec, bspec, sum } = sumMatch.groups;
+    dices = sum
+      .split(/\s*\+\s*/)
+      .reduce<number>((count, num) => Number(count) + Number(num), 0);
 
-  if (attrMatch?.groups) {
+    reroll10 = dices > 3 ? !!explosive || !!spec || !!spe || !!bspec : false;
+    remove1 = dices > 4 ? Number(spe || spec || bspec || 0) : 0;
+    raw = raw || Boolean(sumMatch.groups.raw);
+  } else if (attrMatch?.groups) {
     const { bspe, spe, spec } = attrMatch.groups;
     const attr = Number(attrMatch.groups.attr);
     const abi = Number(attrMatch.groups.abi);
+    raw = raw || Boolean(attrMatch.groups.raw);
     dices = attr + abi;
     reroll10 = abi >= 3;
     remove1 = bspe || spe || spec ? Math.max(abi - 3, 0) : 0;
   } else if (dicesMatch?.groups) {
-    const { explosive } = dicesMatch.groups;
-    raw = Boolean(dicesMatch.groups.raw);
-    dices = Number(dicesMatch.groups.dices);
-    remove1 = dices > 4 ? Number(dicesMatch.groups.spec || 0) : 0;
-    reroll10 = dices > 3 ? !!explosive || !!dicesMatch.groups.spec : false;
+    const { explosive, diceCount, spec, spe, bspec } = dicesMatch.groups;
+    raw = raw || Boolean(dicesMatch.groups.raw);
+    dices = Number(diceCount);
+    remove1 = dices > 4 ? Number(spec || spe || bspec || 0) : 0;
+    reroll10 = dices > 3 ? !!explosive || !!spec || !!spe || !!bspec : false;
   }
   const sr = Number(
     (srMatch?.groups && (srMatch?.groups.sr || srMatch?.groups.srs)) || 6
@@ -44,7 +56,7 @@ export const parseCommand = (text: string) => {
     dices,
     raw,
     sr,
-    ambi,
+    ambi: false,
   };
 };
 
