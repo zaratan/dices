@@ -84,6 +84,11 @@ export const successDices = ({
     return rolls.success;
   });
 
+export type successTableType = {
+  array: Array<{ name: number; val: number }>;
+  map: Map<number, { name: number; val: number }>;
+};
+
 export const successTable = ({
   array,
   fillVoids,
@@ -123,11 +128,6 @@ export const successTable = ({
     array: Array.from(finalMap.values()).sort((a, b) => a.name - b.name),
     map: finalMap,
   };
-};
-
-export type successTableType = {
-  array: Array<{ name: number; val: number }>;
-  map: Map<number, { name: number; val: number }>;
 };
 
 export const table = ({

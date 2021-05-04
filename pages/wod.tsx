@@ -8,7 +8,7 @@ import {
   Line,
   Legend,
 } from 'recharts';
-import { successDices, table, successTable } from '../helpers/dices';
+import { successDices, successTable } from '../helpers/dices';
 
 const NUMBER_ROLLS = 10000;
 const SR = 7;

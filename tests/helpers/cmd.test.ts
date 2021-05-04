@@ -1,4 +1,3 @@
-import { equal } from 'assert';
 import { parseCommand } from '../../helpers/cmd';
 
 describe('parseCommand', () => {
@@ -71,7 +70,7 @@ describe('parseCommand', () => {
       expect(parseCommand('1+2r').raw).toBeTruthy();
       expect(parseCommand('1+2  r').raw).toBeTruthy();
       expect(parseCommand('1+2 sr 4 r').raw).toBeFalsy();
-      expect(parseCommand('1+2 sr 4 raw').raw).toBeTruthy;
+      expect(parseCommand('1+2 sr 4 raw').raw).toBeTruthy();
     });
 
     it('works for sums', () => {
