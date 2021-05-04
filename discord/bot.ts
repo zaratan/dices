@@ -16,9 +16,10 @@ client.on('message', (msg) => {
   if (diceMatch?.groups?.cmd) {
     const result = parseAndRoll(diceMatch.groups.cmd);
     const resultEmbed = new MessageEmbed();
+    resultEmbed.setTitle(result.successString);
     resultEmbed.setDescription(result.explString);
 
-    msg.reply(result.successString);
+    msg.reply('');
     msg.reply(resultEmbed);
   }
 });
