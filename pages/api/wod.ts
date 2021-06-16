@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { successRoll } from '../../helpers/dices';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const wodApi = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     let { sr = 6, attribute = 1, ability = 1, spec = false } = req.query;
     sr = Number(sr);
@@ -26,3 +26,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).json({ error: e.message });
   }
 };
+
+export default wodApi;

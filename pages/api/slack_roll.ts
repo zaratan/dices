@@ -2,7 +2,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { parseAndRoll } from '../../helpers/cmd';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const slackRollApi = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { command = '', text = '', user_id = '' } = req.body;
     console.log({ text, user_id, command });
@@ -32,8 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             elements: [
               {
                 type: 'mrkdwn',
-                text:
-                  'Ex: /roll 3+5 sr8 spe\n=> 3 attribute + 5 ability SR 8 and I have the spec',
+                text: 'Ex: /roll 3+5 sr8 spe\n=> 3 attribute + 5 ability SR 8 and I have the spec',
               },
             ],
           },
@@ -101,3 +100,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).json({ error: e.message });
   }
 };
+
+export default slackRollApi;

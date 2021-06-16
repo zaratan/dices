@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 
 const index = () => (
   <div>
@@ -20,12 +21,12 @@ const index = () => (
       </li>
       <li>
         <a href="https://slack.com/oauth/v2/authorize?client_id=235853654149.1121819109926&scope=commands">
-          <img
+          <Image
             alt="Add to Slack"
             height="40"
             width="139"
+            layout="fixed"
             src="https://platform.slack-edge.com/img/add_to_slack.png"
-            srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
           />
         </a>
       </li>

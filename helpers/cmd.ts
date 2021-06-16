@@ -4,13 +4,16 @@ import { successRoll } from './dices';
 export const SR_REGEXP = /sr\s*(?<sr>\d+)/i;
 
 // https://regex101.com/r/J4vAbo/2
-export const SUM_REGEX = /(?:spe?c?\s*(?<bspec>\d+).*)?(?<sum>\d+(?:\s*\+\s*\d+\s*)+\+\s*\d+)\s*d?(?<explosive>e)?(?<raw>r)?(?:s\s*(?<spe>\d+))?(?:.*spe?c?\s*(?<spec>\d+))?/i;
+export const SUM_REGEX =
+  /(?:spe?c?\s*(?<bspec>\d+).*)?(?<sum>\d+(?:\s*\+\s*\d+\s*)+\+\s*\d+)\s*d?(?<explosive>e)?(?<raw>r)?(?:s\s*(?<spe>\d+))?(?:.*spe?c?\s*(?<spec>\d+))?/i;
 
 // https://regex101.com/r/zRwzzV/4
-export const ATTR_ABI_REGEX = /(?<bspe>spe?c?)?(?:.*?)(?<attr>\d+)\s*\+\s*(?<abi>\d+)(?<raw>\s*r)?(?:.*(?<spe>spe?c?))?/i;
+export const ATTR_ABI_REGEX =
+  /(?<bspe>spe?c?)?(?:.*?)(?<attr>\d+)\s*\+\s*(?<abi>\d+)(?<raw>\s*r)?(?:.*(?<spe>spe?c?))?/i;
 
 // https://regex101.com/r/EA0VRJ/7
-export const DICES_REGEX = /(?:spe?c?\s*(?<bspec>\d+).*)?(?:\s*sr\s*\d+\s*)?(?<diceCount>\d+)\s*d?(?<explosive>e)?(?<raw>r)?(?:s\s*(?<spe>\d+))?(?:.*spe?c?\s*(?<spec>\d+))?/i;
+export const DICES_REGEX =
+  /(?:spe?c?\s*(?<bspec>\d+).*)?(?:\s*sr\s*\d+\s*)?(?<diceCount>\d+)\s*d?(?<explosive>e)?(?<raw>r)?(?:s\s*(?<spe>\d+))?(?:.*spe?c?\s*(?<spec>\d+))?/i;
 
 export const parseCommand = (text: string) => {
   let remove1 = 0;
