@@ -123,7 +123,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-const Vampire = ({
+function Vampire({
   data,
   dice_count,
   sr,
@@ -133,7 +133,7 @@ const Vampire = ({
   dice_count: number;
   data: Array<{ name: number; 8: number }>;
   patreon: boolean;
-}) => {
+}) {
   const router = useRouter();
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -210,6 +210,6 @@ const Vampire = ({
       <p>SR: {sr}</p>
     </div>
   );
-};
+}
 
 export default Vampire;

@@ -165,8 +165,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     sr: number;
   }) =>
     Math.round(
-      (rollTable.find((e) => e.sr === sr)?.rolls?.map?.get(rollMin[key] + i)
-        ?.val /
+      ((rollTable.find((e) => e.sr === sr)?.rolls?.map?.get(rollMin[key] + i)
+        ?.val || 0) /
         NUMBER_ROLLS) *
         10000
     ) / 100 || 0;
@@ -199,14 +199,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     >((result, sumTable) => {
       result[sumTable.sr] = {
         botches:
-          Math.round((sumTable.rolls.map.get(-1)?.val / NUMBER_ROLLS) * 10000) /
-            100 || 0,
+          Math.round(
+            ((sumTable.rolls.map.get(-1)?.val || 0) / NUMBER_ROLLS) * 10000
+          ) / 100 || 0,
         fails:
-          Math.round((sumTable.rolls.map.get(0)?.val / NUMBER_ROLLS) * 10000) /
-            100 || 0,
+          Math.round(
+            ((sumTable.rolls.map.get(0)?.val || 0) / NUMBER_ROLLS) * 10000
+          ) / 100 || 0,
         successes:
-          Math.round((sumTable.rolls.map.get(1)?.val / NUMBER_ROLLS) * 10000) /
-            100 || 0,
+          Math.round(
+            ((sumTable.rolls.map.get(1)?.val || 0) / NUMBER_ROLLS) * 10000
+          ) / 100 || 0,
       };
       return result;
     }, []);
@@ -223,7 +226,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-const ResultSection = ({
+function ResultSection({
   title,
   srs,
   diceCount,
@@ -235,30 +238,32 @@ const ResultSection = ({
   diceCount: number;
   data: any;
   successRates: Array<{ botches: number; fails: number; successes: number }>;
-}) => (
-  <section>
-    <header>
-      <h1>
-        Dices: {diceCount} {title}
-      </h1>
-    </header>
-    <ul>
-      {srs.map((sr) => (
-        <li key={`${title}${sr}`}>
-          SR {sr}: Botch: {successRates[sr].botches}%, Fail:{' '}
-          {successRates[sr].fails}%, Success: {successRates[sr].successes}%
-        </li>
-      ))}
-    </ul>
-    <WodDicesVariableSrGraph
-      data={data}
-      diceCount={diceCount}
-      rollType={`${title} at least n successes`}
-    />
-  </section>
-);
+}) {
+  return (
+    <section>
+      <header>
+        <h1>
+          Dices: {diceCount} {title}
+        </h1>
+      </header>
+      <ul>
+        {srs.map((sr) => (
+          <li key={`${title}${sr}`}>
+            SR {sr}: Botch: {successRates[sr].botches}%, Fail:{' '}
+            {successRates[sr].fails}%, Success: {successRates[sr].successes}%
+          </li>
+        ))}
+      </ul>
+      <WodDicesVariableSrGraph
+        data={data}
+        diceCount={diceCount}
+        rollType={`${title} at least n successes`}
+      />
+    </section>
+  );
+}
 
-const Vampire = ({
+function Vampire({
   data,
   srs,
   successRates,
@@ -276,7 +281,7 @@ const Vampire = ({
   };
   data: { noReRoll: any; reRoll: any; spe1: any; spe2: any; spe3: any };
   patreon: boolean;
-}) => {
+}) {
   const router = useRouter();
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -333,6 +338,6 @@ const Vampire = ({
       />
     </div>
   );
-};
+}
 
 export default Vampire;
