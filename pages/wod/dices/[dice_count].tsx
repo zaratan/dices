@@ -91,8 +91,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     sr: number;
   }) =>
     Math.round(
-      (rollTable.find((e) => e.sr === sr)?.rolls?.map?.get(rollMin[key] + i)
-        ?.val /
+      ((rollTable.find((e) => e.sr === sr)?.rolls?.map?.get(rollMin[key] + i)
+        ?.val || 0) /
         NUMBER_ROLLS) *
         10000
     ) / 100 || 0;
@@ -125,7 +125,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-const Vampire = ({
+function Vampire({
   data,
   dice_count,
   patreon,
@@ -133,7 +133,7 @@ const Vampire = ({
   dice_count: number;
   data: { noReRoll: any; reRoll: any; spe1: any; spe2: any; spe3: any };
   patreon: boolean;
-}) => {
+}) {
   const router = useRouter();
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -180,6 +180,6 @@ const Vampire = ({
       />
     </div>
   );
-};
+}
 
 export default Vampire;
