@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const slackInstallApi = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await fetch(

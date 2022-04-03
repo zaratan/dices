@@ -1,7 +1,7 @@
-module.exports = {
-  images: {
-    domains: ['platform.slack-edge.com'],
-    formats: ['image/avif', 'image/webp'],
-  },
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
   swcMinify: true,
 };
+
+module.exports = nextConfig;

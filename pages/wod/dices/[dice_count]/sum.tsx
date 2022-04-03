@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
