@@ -4,7 +4,11 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      transitionDuration: {
+        5000: '5s',
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };

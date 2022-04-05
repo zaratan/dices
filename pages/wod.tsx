@@ -8,6 +8,7 @@ import {
   Line,
   Legend,
 } from 'recharts';
+import Layout from '../components/Layout';
 import { successDices, successTable } from '../helpers/dices';
 
 const NUMBER_ROLLS = 10000;
@@ -118,66 +119,68 @@ function Vampire({
   };
 }) {
   return (
-    <div>
+    <>
       <Head>
         <title>Dices - Wod</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <LineChart
-        width={700}
-        height={400}
-        data={data.sr7}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
+      <Layout currentPage="WoD">
+        <LineChart
+          width={700}
+          height={400}
+          data={data.sr7}
+          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        >
+          <Legend verticalAlign="top" height={36} />
 
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="D8NRRS0"
-          // stroke="#2368ee"
-          yAxisId={0}
-          name="8 dices"
-        />
-        <Line
-          type="monotone"
-          dataKey="D8RRS0"
-          stroke="#ff6811"
-          yAxisId={0}
-          name="8 dices Reroll"
-        />
-        <Line
-          type="monotone"
-          dataKey="D8RRS1"
-          stroke="#ff68ee"
-          yAxisId={0}
-          name="8 dices Reroll spe 1"
-        />
-        <Line
-          type="monotone"
-          dataKey="D8RRS2"
-          stroke="#236800"
-          yAxisId={0}
-          name="8 dices Reroll spe 2"
-        />
-        <Line
-          type="monotone"
-          dataKey="D8RRS3"
-          stroke="#68e32e"
-          yAxisId={0}
-          name="8 dices Reroll spe 3"
-        />
-        <Line
-          type="monotone"
-          dataKey="D8RRS4"
-          stroke="#2f68ee"
-          yAxisId={0}
-          name="8 dices Reroll spe 4"
-        />
-      </LineChart>
-    </div>
+          <XAxis dataKey="name" />
+          <Tooltip />
+          <CartesianGrid stroke="#f5f5f5" />
+          <Line
+            type="monotone"
+            dataKey="D8NRRS0"
+            // stroke="#2368ee"
+            yAxisId={0}
+            name="8 dices"
+          />
+          <Line
+            type="monotone"
+            dataKey="D8RRS0"
+            stroke="#ff6811"
+            yAxisId={0}
+            name="8 dices Reroll"
+          />
+          <Line
+            type="monotone"
+            dataKey="D8RRS1"
+            stroke="#ff68ee"
+            yAxisId={0}
+            name="8 dices Reroll spe 1"
+          />
+          <Line
+            type="monotone"
+            dataKey="D8RRS2"
+            stroke="#236800"
+            yAxisId={0}
+            name="8 dices Reroll spe 2"
+          />
+          <Line
+            type="monotone"
+            dataKey="D8RRS3"
+            stroke="#68e32e"
+            yAxisId={0}
+            name="8 dices Reroll spe 3"
+          />
+          <Line
+            type="monotone"
+            dataKey="D8RRS4"
+            stroke="#2f68ee"
+            yAxisId={0}
+            name="8 dices Reroll spe 4"
+          />
+        </LineChart>
+      </Layout>
+    </>
   );
 }
 

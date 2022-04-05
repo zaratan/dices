@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { successDices, successTable } from '../../../helpers/dices';
 import WodDicesVariableSrGraph from '../../../components/WodDicesVariableSrGraph';
+import Layout from '../../../components/Layout';
 
 const NUMBER_ROLLS = 10000;
 
@@ -147,37 +148,39 @@ function Vampire({
   }
 
   return (
-    <div>
+    <>
       <Head>
         <title>Dices - Wod - Dices: {dice_count}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <WodDicesVariableSrGraph
-        data={data.noReRoll}
-        diceCount={dice_count}
-        rollType="no reroll"
-      />
-      <WodDicesVariableSrGraph
-        data={data.reRoll}
-        diceCount={dice_count}
-        rollType="with reroll"
-      />
-      <WodDicesVariableSrGraph
-        data={data.spe1}
-        diceCount={dice_count}
-        rollType="with 1 spe"
-      />
-      <WodDicesVariableSrGraph
-        data={data.spe2}
-        diceCount={dice_count}
-        rollType="with 2 spe"
-      />
-      <WodDicesVariableSrGraph
-        data={data.spe3}
-        diceCount={dice_count}
-        rollType="with 3 spe"
-      />
-    </div>
+      <Layout currentPage="WoD">
+        <WodDicesVariableSrGraph
+          data={data.noReRoll}
+          diceCount={dice_count}
+          rollType="no reroll"
+        />
+        <WodDicesVariableSrGraph
+          data={data.reRoll}
+          diceCount={dice_count}
+          rollType="with reroll"
+        />
+        <WodDicesVariableSrGraph
+          data={data.spe1}
+          diceCount={dice_count}
+          rollType="with 1 spe"
+        />
+        <WodDicesVariableSrGraph
+          data={data.spe2}
+          diceCount={dice_count}
+          rollType="with 2 spe"
+        />
+        <WodDicesVariableSrGraph
+          data={data.spe3}
+          diceCount={dice_count}
+          rollType="with 3 spe"
+        />
+      </Layout>
+    </>
   );
 }
 

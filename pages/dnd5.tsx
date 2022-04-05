@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { GetStaticProps } from 'next';
 import { takeNDices, table, rollDice } from '../helpers/dices';
+import Layout from '../components/Layout';
 
 const NUMBER_ROLLS = 100000;
 
@@ -65,46 +66,47 @@ function Home({
   }>;
 }) {
   return (
-    <div>
+    <>
       <Head>
         <title>Dices - D&D 5</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Layout currentPage="DnD">
+        <LineChart
+          width={700}
+          height={400}
+          data={data}
+          margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+        >
+          <Legend verticalAlign="top" height={36} />
 
-      <LineChart
-        width={700}
-        height={400}
-        data={data}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <Legend verticalAlign="top" height={36} />
-
-        <XAxis dataKey="name" />
-        <Tooltip />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line
-          type="monotone"
-          dataKey="advantage"
-          stroke="#ff7300"
-          yAxisId={0}
-          name="Advantage"
-        />
-        <Line
-          type="monotone"
-          dataKey="normal"
-          stroke="#66dd12"
-          yAxisId={0}
-          name="Normal"
-        />
-        <Line
-          type="monotone"
-          dataKey="disadvantage"
-          stroke="#2368ee"
-          yAxisId={0}
-          name="Disadvantage"
-        />
-      </LineChart>
-    </div>
+          <XAxis dataKey="name" />
+          <Tooltip />
+          <CartesianGrid stroke="#f5f5f5" />
+          <Line
+            type="monotone"
+            dataKey="advantage"
+            stroke="#ff7300"
+            yAxisId={0}
+            name="Advantage"
+          />
+          <Line
+            type="monotone"
+            dataKey="normal"
+            stroke="#66dd12"
+            yAxisId={0}
+            name="Normal"
+          />
+          <Line
+            type="monotone"
+            dataKey="disadvantage"
+            stroke="#2368ee"
+            yAxisId={0}
+            name="Disadvantage"
+          />
+        </LineChart>
+      </Layout>
+    </>
   );
 }
 

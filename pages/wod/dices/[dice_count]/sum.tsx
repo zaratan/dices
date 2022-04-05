@@ -8,6 +8,7 @@ import {
   successTableType,
 } from '../../../../helpers/dices';
 import WodDicesVariableSrGraph from '../../../../components/WodDicesVariableSrGraph';
+import Layout from '../../../../components/Layout';
 
 const NUMBER_ROLLS = 10000;
 
@@ -295,47 +296,49 @@ function Vampire({
   }
 
   return (
-    <div>
+    <>
       <Head>
         <title>Dices - Wod - Dices: {dice_count}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ResultSection
-        data={data.noReRoll}
-        diceCount={dice_count}
-        srs={srs}
-        title="no reroll"
-        successRates={successRates.noReRoll}
-      />
-      <ResultSection
-        data={data.reRoll}
-        diceCount={dice_count}
-        srs={srs}
-        title="with reroll"
-        successRates={successRates.reRoll}
-      />
-      <ResultSection
-        data={data.spe1}
-        diceCount={dice_count}
-        srs={srs}
-        title="with spe 1"
-        successRates={successRates.spe1}
-      />
-      <ResultSection
-        data={data.spe2}
-        diceCount={dice_count}
-        srs={srs}
-        title="with spe 2"
-        successRates={successRates.spe2}
-      />
-      <ResultSection
-        data={data.spe3}
-        diceCount={dice_count}
-        srs={srs}
-        title="with spe 3"
-        successRates={successRates.spe3}
-      />
-    </div>
+      <Layout currentPage="WoD">
+        <ResultSection
+          data={data.noReRoll}
+          diceCount={dice_count}
+          srs={srs}
+          title="no reroll"
+          successRates={successRates.noReRoll}
+        />
+        <ResultSection
+          data={data.reRoll}
+          diceCount={dice_count}
+          srs={srs}
+          title="with reroll"
+          successRates={successRates.reRoll}
+        />
+        <ResultSection
+          data={data.spe1}
+          diceCount={dice_count}
+          srs={srs}
+          title="with spe 1"
+          successRates={successRates.spe1}
+        />
+        <ResultSection
+          data={data.spe2}
+          diceCount={dice_count}
+          srs={srs}
+          title="with spe 2"
+          successRates={successRates.spe2}
+        />
+        <ResultSection
+          data={data.spe3}
+          diceCount={dice_count}
+          srs={srs}
+          title="with spe 3"
+          successRates={successRates.spe3}
+        />
+      </Layout>
+    </>
   );
 }
 

@@ -10,6 +10,9 @@
     "discord-dev": "nodemon --watch discord --ext ts --exec 'ts-node -P tsconfig.bot.json' discord/bot.ts"
   },
   "dependencies": {
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
+    "@tailwindcss/forms": "^0.5.0",
     "bufferutil": "^4.0.6",
     "discord.js": "< 13",
     "dotenv": "^16.0.0",
