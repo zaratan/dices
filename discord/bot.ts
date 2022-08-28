@@ -13,7 +13,9 @@ client.on('ready', () => {
 
 client.on('message', (msg) => {
   const diceMatch = /!roll\s+(?<cmd>.*$)/.exec(msg.content);
+  console.log(`New message received: ${msg.content}`);
   if (diceMatch?.groups?.cmd) {
+    console.log(`Parsing dice command: ${diceMatch.groups.cmd}`);
     const result = parseAndRoll(diceMatch.groups.cmd);
     const resultEmbed = new MessageEmbed();
     resultEmbed.setTitle(result.successString);
